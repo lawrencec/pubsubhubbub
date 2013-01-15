@@ -4,7 +4,7 @@
   "description": "PubSubHubbub subscriber",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "mocha -R spec test/test.js"
   },
   "homepage": "http://github.com/andris9/pubsubhubbub",
   "author": "Andris Reinman",
@@ -12,5 +12,12 @@
   "dependencies": {
     "request": "*",
     "nodepie": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "unroll": "*"
   }
 }

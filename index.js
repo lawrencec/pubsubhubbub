@@ -20,6 +20,7 @@ module.exports.PubSubHubbub = PubSubHubbub;
  * @param {Number} [options.maxRSSSize=3MB] Maximum file size in bytes for an incoming RSS file - if longer, it will be trimmed
  * @param {String} [options.gid] If started as root, downgrade to selected group ID
  * @param {String} [options.giu] If started as root, downgrade to selected user ID
+ * @param {String} [options.headers] Map of headers to send
  */
 function PubSubHubbub(options){
     Stream.call(this);
@@ -29,18 +30,37 @@ function PubSubHubbub(options){
     this.port = options.port || 8921;
     this.callbackServer = options.callbackServer;
     this.callbackPath = options.callbackPath || "/hubbub";
+    this.headers = options.headers || null;
     this.token = options.token || false;
     this.maxRSSSize = options.maxRSSSize || 3 * 1024 * 1024;
     this.gid = options.gid;
     this.uid = options.uid;
-
-    this.server = http.createServer(this.serverHandler.bind(this));
-    this.server.on("error", this.onServerError.bind(this));
-    this.server.on("listening", this.onServerListening.bind(this));
-
-    this.server.listen(this.port);
 }
 utillib.inherits(PubSubHubbub, Stream);
+
+PubSubHubbub.prototype.start = function() {
+  if (!this.server) {
+      this.server = http.createServer(this.serverHandler.bind(this));
+      this.server.on("error", this.onServerError.bind(this));
+      this.server.on("listening", this.onServerListening.bind(this));
+  }
+  this.server.listen(this.port);
+}
+
+PubSubHubbub.prototype.stop = function(callback) {
+  console.log('Stopping server');
+  this.removeAllListeners();
+  callback = function() {
+      console.log('Server stopped')
+  }
+  if (this.server) {
+      this.server.removeAllListeners();
+      this.server.close(callback);
+  }
+  else if (callback) {
+      callback();
+  }
+}
 
 PubSubHubbub.prototype.serverHandler = function(req, res){
     if(req.url.substr(0, this.callbackPath.length) != this.callbackPath){
@@ -97,7 +117,7 @@ PubSubHubbub.prototype.setSubscription = function(mode, topic, hub, callback){
     var form = {
             "hub.mode": mode || "subscribe",
             "hub.verify": "sync",
-            "hub.callback": this.callbackServer + this.callbackPath,
+            "hub.callback": this.callbackServer + ':' + this.port + this.callbackPath,
             "hub.topic": topic
         },
         postParams = {
@@ -106,10 +126,14 @@ PubSubHubbub.prototype.setSubscription = function(mode, topic, hub, callback){
             encoding: "utf-8"
         };
 
+    if (this.headers) {
+        postParams.headers = this.headers;
+    }
+
+
     if(this.token){
         form["hub.verify_token"] = this.token;
     }
-
     request.post(postParams, this.pubsubResponse.bind(this, topic, callback));
 }
 
@@ -172,13 +196,19 @@ PubSubHubbub.prototype.serverPOSTHandler = function(req, res){
     req.on("end", (function(){
         res.writeHead(204, {'Content-Type': 'text/plain; charset=utf-8'});
         res.end();
-        this.parseFeed(body);
+        if (req.headers['content-type'].match(/^application\/atom\+xml/)) {
+          this.parseXMLFeed(body);
+        }
+        else {
+          this.parseJSONFeed(body)
+        }
+
     }).bind(this));
 
 }
 
-PubSubHubbub.prototype.parseFeed = function(xml){
-    var feed = new NodePie(xml);
+PubSubHubbub.prototype.parseXMLFeed = function(feedBody){
+    var feed = new NodePie(feedBody);
     
     try{
         feed.init();
@@ -188,4 +218,17 @@ PubSubHubbub.prototype.parseFeed = function(xml){
     }
 
     this.emit("feed", feed);
+}
+
+PubSubHubbub.prototype.parseJSONFeed = function(feedBody){
+  var feed;
+
+  try{
+    feed = JSON.parse(feedBody);
+  }catch(E){
+    this.emit("error", E);
+    return;
+  }
+
+  this.emit("feed", feed);
 }
