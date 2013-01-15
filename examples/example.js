@@ -2,24 +2,36 @@
  * This example shows how to subscribe to superfeedr providing
  * you have an account and provide the correct details (using HTTP Basic).
  * If you have to use HTTP Basic, make sure you use https.
+ * Example usage:
+ * node examples/example.js --callbackServer http://yourserver.com --callbackPort 8084 --topic http://push-pub.appspot.com/feed --hub http://pubsubhubbub.appspot.com/ --auth.username foo --auth.password ba
  */
+var nconf = require('nconf'),
+    PubSubHubbub = require("../index").PubSubHubbub;
 
+nconf.argv();
 
-var PubSubHubbub = require("../index").PubSubHubbub;
+var callbackServer = nconf.get('callbackServer'),
+    callbackPort = nconf.get('callbackPort'),
+    topicFeed = nconf.get('topic'),
+    aHub = nconf.get('hub'),
+    config;
 
-var pubsub = new PubSubHubbub({
-    callbackServer: "http://myserver.com", //change this to where you are running this
+config = {
+    callbackServer: callbackServer, //change this to where you are running this
     callbackPath: '/hub',
-    port: 8084
-//    headers: { // provide headers if required
-//        "Authorization" : "Basic " +
-//            new Buffer(
-//                'username' + ":" + 'password'
-//            ).toString("base64"),
-//        "Accept": 'application/json' //
-//    }
+    port: callbackPort
+}
 
-});
+if (nconf.get('auth')) {
+    config.headers = { // provide headers if required
+        "Authorization" : "Basic " +
+        new Buffer(
+            nconf.get('auth').username  + ":" + nconf.get('auth').password
+        ).toString("base64")
+//        "Accept": 'application/json' //
+    }
+}
+var pubsub = new PubSubHubbub(config);
 
 pubsub.on("subscribe", function(data){
     console.log("subscribe: ")
@@ -42,8 +54,8 @@ pubsub.on("feed", function(feed){
 });
 
 pubsub.on("listen", function(){
-    var topic = "http://testetstetss.blogspot.com/feeds/posts/default",
-        hub = "http://pubsubhubbub.appspot.com/";
+    var topic = topicFeed,
+        hub = aHub;
 
     console.log('Listening to hub: ' + hub);
 
