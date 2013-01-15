@@ -1,4 +1,4 @@
-# README.md
+# README.md [![Build Status](https://travis-ci.org/lawrencec/pubsubhubbub.png?branch=master)](https://travis-ci.org/lawrencec/pubsubhubbub)
 
 PubSubHubbub subscriber module
 
