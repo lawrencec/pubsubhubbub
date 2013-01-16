@@ -48,16 +48,18 @@ PubSubHubbub.prototype.start = function() {
 }
 
 PubSubHubbub.prototype.stop = function(callback) {
-  console.log('Stopping server');
+
   this.removeAllListeners();
-  callback = function() {
+  if (!callback) {
+    callback = function() {
       console.log('Server stopped')
+    }
   }
   if (this.server) {
       this.server.removeAllListeners();
       this.server.close(callback);
   }
-  else if (callback) {
+  if (callback) {
       callback();
   }
 }
