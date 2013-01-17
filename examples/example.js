@@ -50,6 +50,30 @@ pubsub.on("error", function(error){
 
 pubsub.on("feed", function(feed){
     console.log(feed);
+    console.log('Date : ', feed.getDate());
+    console.log('Title : ', feed.getTitle());
+    console.log('Description : ', feed.getDescription());
+    console.log('Encoding : ', feed.getEncoding());
+    console.log('Hub : ', feed.getHub());
+    console.log('Image : ', feed.getImage());
+    console.log('Permalink : ', feed.getPermalink());
+    console.log('Num of items : ', feed.getItemQuantity());
+    var items = feed.getItems();
+    items.forEach(function(item, index, arr) {
+        console.log('Item ' + index);
+            ['Title',
+            'Description',
+            'Authors',
+            'Categories',
+            'Comments',
+            'Contents',
+            'Date',
+            'Permalink',
+            'UpdateDate'
+            ].forEach(function(field) {
+                console.log(' - ' +  field + ' : ', item['get'+field]());
+            });
+    });
     pubsub.unsubscribe(feed.getPermalink(), feed.getHub(), console.log.bind(console, "Unsubscribed "+feed.getPermalink()+" from "+feed.getHub()));
 });
 
