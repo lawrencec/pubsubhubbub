@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <status feed="http://push-pub.appspot.com/feed" xmlns="http://superfeedr.com/xmpp-pubsub-ext">
+        <http code="200">Fetched (ping) 200 and parsed 1/20 entries</http>
+        <next_fetch>2013-01-18T23:33:19Z</next_fetch>
+        <entries_count_since_last_maintenance>21</entries_count_since_last_maintenance>
+        <period>181</period>
+        <last_fetch>2013-01-18T23:30:18Z</last_fetch>
+        <last_parse>2013-01-18T23:30:18Z</last_parse>
+        <last_maintenance_at>2013-01-18T09:12:20Z</last_maintenance_at>
+        <title>Publisher example</title>
+        <id>http://push-pub.appspot.com/feed</id>
+        <updated>2013-01-18T23:30:16Z</updated>
+        <link title="Publisher example" rel="self" href="http://push-pub.appspot.com/feed" type="application/atom+xml"/>
+        <link title="" rel="hub" href="http://pubsubhubbub.superfeedr.com" type="text/html"/>
+        <title>Publisher example</title>
+        <id>http://push-pub.appspot.com/feed</id>
+        <updated>2013-01-18T23:30:16Z</updated>
+        <link title="Publisher example" rel="self" href="http://push-pub.appspot.com/feed" type="application/atom+xml"/>
+        <link title="" rel="hub" href="http://pubsubhubbub.superfeedr.com" type="text/html"/>
+    </status>
+    <link title="Publisher example" rel="self" href="http://push-pub.appspot.com/feed" type="application/atom+xml"/>
+    <link title="" rel="hub" href="http://pubsubhubbub.superfeedr.com" type="text/html"/>
+    <title>Publisher example</title>
+    <updated>2013-01-18T23:30:16Z</updated>
+    <id>http://push-pub.appspot.com/feed</id>
+    <entry xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.georss.org/georss"
+           xmlns:as="http://activitystrea.ms/spec/1.0/" xmlns:sf="http://superfeedr.com/xmpp-pubsub-ext">
+        <id>http://push-pub.appspot.com/feed/639004</id>
+        <published>2013-01-18T23:30:16Z</published>
+        <updated>2013-01-18T23:30:16Z</updated>
+        <title>Hello</title>
+        <content>World</content>
+        <link title="dsds" rel="alternate" href="http://push-pub.appspot.com/entry/639004" type="text/html"/>
+    </entry>
+    <entry xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.georss.org/georss"
+           xmlns:as="http://activitystrea.ms/spec/1.0/" xmlns:sf="http://superfeedr.com/xmpp-pubsub-ext">
+        <id>http://push-pub.appspot.com/feed/639004</id>
+        <published>2013-01-18T23:30:16Z</published>
+        <updated>2013-01-18T23:30:16Z</updated>
+        <title>Hello</title>
+        <content>World</content>
+        <link title="dsds" rel="alternate" href="http://push-pub.appspot.com/entry/639004" type="text/html"/>
+    </entry>
+</feed>

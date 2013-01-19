@@ -77,4 +77,41 @@ describe('subscribes/unsubscribes', function() {
             ['unsubscribe' , 'Error: Network timeout' , 422]
         ]
     );
+})
+
+describe('events', function() {
+    var notificationXML = fs.readFileSync('./test/fixtures/notification.xml', 'utf-8'),
+        notificationDoubleXML = fs.readFileSync('./test/fixtures/notification-double.xml', 'utf-8');
+
+    beforeEach(function(done) {
+        pubsub = new PubSubHubbub({
+            callbackServer: 'fakeserver.com',
+            callbackPath: '/fakehub',
+            port: 8084
+        });
+        sinon.stub(pubsub, 'start', function() {});
+        pubsub.start();
+        done();
+    });
+
+    afterEach(function(done) {
+        pubsub.stop(done);
+    });
+
+    it('publishes feed event with headers', function() {
+        var spy = sinon.spy();
+
+        pubsub.on('feed', spy);
+        pubsub.parseXMLFeed(
+            notificationXML,
+            {
+                'content-type' : 'application/atom+xml; charset=UTF-8'
+            }
+        );
+        expect(spy.callCount).to.be.equal(1);
+        var spyCall = spy.getCall(0);
+        expect(spyCall.args[0].feed).to.exist;
+        expect(spyCall.args[0].headers).to.exist;
+        expect(spyCall.args[0].headers['content-type']).to.equal('application/atom+xml; charset=UTF-8');
+    })
 });

@@ -49,7 +49,11 @@ pubsub.on("error", function(error){
 });
 
 pubsub.on("feed", function(feed){
-    console.log(feed);
+    var headers = feed.headers;
+    feed = feed.feed;
+    console.log('headers:');
+    console.log(headers);
+    console.log('feed:');
     console.log('Date : ', feed.getDate());
     console.log('Title : ', feed.getTitle());
     console.log('Description : ', feed.getDescription());

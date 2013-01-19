@@ -199,17 +199,17 @@ PubSubHubbub.prototype.serverPOSTHandler = function(req, res){
         res.writeHead(204, {'Content-Type': 'text/plain; charset=utf-8'});
         res.end();
         if (req.headers['content-type'].match(/^application\/atom\+xml/)) {
-          this.parseXMLFeed(body);
+          this.parseXMLFeed(body, req.headers);
         }
         else {
-          this.parseJSONFeed(body)
+          this.parseJSONFeed(body, req.headers)
         }
 
     }).bind(this));
 
 }
 
-PubSubHubbub.prototype.parseXMLFeed = function(feedBody){
+PubSubHubbub.prototype.parseXMLFeed = function(feedBody, headers){
     var feed = new NodePie(feedBody);
     
     try{
@@ -219,10 +219,13 @@ PubSubHubbub.prototype.parseXMLFeed = function(feedBody){
         return;
     }
 
-    this.emit("feed", feed);
+    this.emit("feed", {
+        feed : feed,
+        headers: headers
+    });
 }
 
-PubSubHubbub.prototype.parseJSONFeed = function(feedBody){
+PubSubHubbub.prototype.parseJSONFeed = function(feedBody, headers){
   var feed;
 
   try{
@@ -232,5 +235,8 @@ PubSubHubbub.prototype.parseJSONFeed = function(feedBody){
     return;
   }
 
-  this.emit("feed", feed);
+  this.emit("feed", {
+      feed : feed,
+      headers: headers
+  });
 }
